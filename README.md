@@ -105,6 +105,6 @@ project/
 | Участник | Зона ответственности | GitHub |
 |----------|---------------------|--------|
 | Щелкунов Данила | Координация команды, Backend⬅️ | [Профиль](https://github.com/danila-ren228) |
-| Галеева Алина | Серверная часть, БД, Tester⬅️ | [Профиль](https://github.com/) |
-| Распопова Мария | Frontend, Backend⬅️ | [Профиль](https://github.com/) |
-| Иванова Елизавета | Frontend, Дизайн, Figma⬅️ | [Профиль](https://github.com/) |
+| Галеева Алина | Серверная часть, БД, Tester⬅️ | [Профиль](https://github.com/) |⬅️⬅️⬅️
+| Распопова Мария | Frontend, Backend⬅️ | [Профиль](https://github.com/mai555-t) |
+| Иванова Елизавета | Frontend, Дизайн, Figma⬅️ | [Профиль](https://github.com/ei7151877-art) |
