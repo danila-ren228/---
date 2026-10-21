@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FITZONE — Фитнес Клуб</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('static/bg.jpg');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed; /* Фиксирует фон при скролле */
+            background-color: #0a0a0a; /* Запасной темный цвет */
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: #111;
+            border-bottom: 1px solid #222;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+        }
+        .logo span {
+            color: #ccff00;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        nav a {
+            color: #ccc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        nav a:hover {
+            color: #ccff00;
+        }
+
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Обертка профиля */
+.user-profile-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Выпадающее меню */
+.profile-dropdown {
+    display: none; /* Скрыто по умолчанию */
+    position: absolute;
+    top: calc(100% + 8px); 
+    right: 0;
+    width: 250px;
+    background: #141414;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+/* Показываем меню (по клику) */
+.user-profile-wrapper.active .profile-dropdown {
+    display: block !important;
+}
+
+.profile-dropdown ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.profile-dropdown li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    color: #ddd;
+    font-size: 14px;
+    text-decoration: none;
+    border-bottom: 1px solid #222;
+    transition: background 0.2s;
+}
+
+.profile-dropdown li a:hover {
+    background: #222;
+}
+
+.profile-dropdown .dropdown-divider {
+    height: 1px;
+    background: #333;
+    margin: 4px 0;
+}
+        /* Buttons */
+        .btn-main {
+            background: #ccff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-block;
+        }
+        .btn-main:hover {
+            background: #b3e600;
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #ccff00;
+            color: #ccff00;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+            display: inline-block;
+        }
+        .btn-outline:hover {
+            background: #ccff00;
+            color: #000;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 100px 50px 60px 50px;
+            text-align: center;
+            background: linear-gradient(180deg, #111 0%, #0a0a0a 100%);
+        }
+        .hero-tag {
+            color: #ccff00;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        .hero h1 {
+            font-size: 52px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .hero h1 span {
+            color: #ccff00;
+        }
+        .hero p {
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero-btns {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        /* Occupancy Widget */
+        .occupancy-bar {
+            max-width: 1000px;
+            margin: 20px auto 0 auto;
+            background: linear-gradient(90deg, #1b3a1e 0%, #141414 100%);
+            border: 1px solid #2e5a32;
+            border-radius: 12px;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .occupancy-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .occupancy-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ccff00;
+            line-height: 1;
+        }
+        .occupancy-text h4 {
+            font-size: 18px;
+            color: #fff;
+        }
+        .occupancy-text p {
+            font-size: 13px;
+            color: #888;
+            margin: 0;
+        }
+        .occupancy-wave {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 30px;
+        }
+        .wave-bar {
+            width: 6px;
+            background: #ccff00;
+            border-radius: 3px;
+            animation: pulseWave 1.5s infinite ease-in-out alternate;
+        }
+        .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.6s; }
+        @keyframes pulseWave {
+            0% { height: 8px; opacity: 0.4; }
+            100% { height: 28px; opacity: 1; }
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 50px;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+        .section-title span {
+            color: #ccff00;
+        }
+
+        /* Grid & Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .card {
+            background: #141414;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #222;
+            transition: 0.3s;
+        }
+        .card:hover {
+            border-color: #ccff00;
+            transform: translateY(-5px);
+        }
+        .card h3 {
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .card p {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Trainers Grid */
+        .trainer-card {
+            background: #141414;
+            border-radius: 10px;
+            border: 1px solid #222;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .trainer-card:hover {
+            border-color: #ccff00;
+            transform: translateY(-5px);
+        }
+        .trainer-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #222;
+            border: 2px solid #ccff00;
+            margin: 0 auto 15px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #ccff00;
+        }
+        .trainer-card h4 {
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        .trainer-card .role {
+            color: #ccff00;
+            font-size: 13px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .trainer-card .exp {
+            color: #777;
+            font-size: 12px;
+        }
+
+        /* Schedule Section */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #141414;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #222;
+        }
+        .schedule-table th, .schedule-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #222;
+        }
+        .schedule-table th {
+            background: #1a1a1a;
+            color: #ccff00;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+        .schedule-table td {
+            font-size: 14px;
+            color: #ddd;
+        }
+        .schedule-table tr:hover {
+            background: #181818;
+        }
+        .badge-spots {
+            background: #1e3a1e;
+            color: #ccff00;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Tariffs */
+        .tariff-card {
+            background: #141414;
+            padding: 40px 30px;
+            border-radius: 10px;
+            border: 1px solid #222;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .tariff-card.popular {
+            border: 2px solid #ccff00;
+        }
+        .tariff-price {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ccff00;
+            margin: 20px 0;
+        }
+
+        /* Footer */
+        footer {
+            background: #111;
+            padding: 50px 50px 30px 50px;
+            border-top: 1px solid #222;
+            color: #aaa;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .footer-col h4 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .footer-col ul {
+            list-style: none;
+        }
+        .footer-col li {
+            margin-bottom: 10px;
+        }
+        .footer-col a {
+            color: #888;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .footer-col a:hover {
+            color: #ccff00;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #222;
+            color: #555;
+            font-size: 13px;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #141414;
+            padding: 30px;
+            border-radius: 10px;
+            width: 380px;
+            border: 1px solid #333;
+            position: relative;
+            color: #fff;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #888;
+        }
+        .close-btn:hover {
+            color: #fff;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            text-align: left;
+        }
+        .form-group label {
+            font-size: 14px;
+            color: #ccc;
+        }
+        .form-group input, .form-group select {
+            padding: 10px;
+            background: #222;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 5px;
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #ccff00;
+        }
+        .status-msg {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+       /* Навигация по дням недели */
+.days-nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 30px 0;
+}
+
+.day-btn {
+    background: #1c1f26;
+    color: #e0e0e0;
+    border: 2px solid #2d333b;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Эффект при наведении */
+.day-btn:hover {
+    background: #282e38;
+    border-color: #ccff00;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(57, 255, 20, 0.2);
+}
+
+
+.day-btn.active {
+    background: #ccff00;
+    color: #0d1117;
+    border-color: #ccff00;
+    font-weight: 800;
+    box-shadow: 0 0 18px rgba(57, 255, 20, 0.45);
+    transform: translateY(-2px);
+}
+
+        .badge-seats {
+            background: #ccff0088;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        /* Бейдж количества свободных мест */
+.seat-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background-color: rgba(37, 175, 67, 0.15); 
+    border: 1px solid #ccff00;                
+    color: #ccff00;                         
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* При отсутствии мест */
+.seat-badge.full {
+    background-color: rgba(255, 77, 77, 0.15);
+    border-color: #ff4d4d;
+    color: #ff4d4d;
+}
+
+/* Стили таблицы для темной темы */
+.schedule-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.schedule-table th {
+    color: #aaa;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px;
+}
+
+.schedule-table td {
+    background: #22262c;
+    color: #fff;
+    padding: 14px 12px;
+    vertical-align: middle;
+}
+
+.schedule-table tr td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.schedule-table tr td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+/* =========================================
+   АДАПТАЦИЯ FITZONE ДЛЯ МОБИЛЬНЫХ ТЕЛЕФОНОВ
+   ========================================= */
+@media (max-width: 768px) {
+    /* 1. Выравниваем всю шапку вертикально */
+    header, .header, nav {
+        flex-direction: column !important;
+        align-items: center !important;
+        padding: 15px 10px !important;
+        gap: 15px !important;
+        height: auto !important;
+    }
+
+    /* 2. Навигация и ссылки */
+    .nav-links, nav ul, header nav {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 10px 15px !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .nav-links a, nav a {
+        font-size: 13px !important;
+        white-space: nowrap;
+    }
+
+    /* 3. Кнопки в шапке (Войти / Записаться) */
+    .header-buttons, .auth-buttons {
+        display: flex !important;
+        justify-content: center !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    /* 4. Главный заглавный блок */
+    h1 {
+        font-size: 32px !important;
+        line-height: 1.2 !important;
+        text-align: center !important;
+    }
+
+    .hero-section, .main-banner {
+        padding: 30px 15px !important;
+        text-align: center !important;
+    }
+
+    /* 5. Переводим все сетки (карточки, тренеры, услуги) в 1 колонку */
+    .grid, .grid-container, .features-grid, .trainers-grid, .services-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+        width: 100% !important;
+    }
+
+    /* 6. Карточки загруженности и преимуществ */
+    .card, .feature-card, .info-card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+}
+/* ===================================================
+   ПРИНУДИТЕЛЬНАЯ АДАПТАЦИЯ ДНИ НЕДЕЛИ + ТРЕНЕРЫ
+   =================================================== */
+@media (max-width: 768px) {
+
+    /* 1. Дни недели: строго в 1 линию с горизонтальным скроллом */
+    div:has(> button:contains("Понедельник")),
+    .days-navigation, .days-filter, .schedule-days,
+    div[class*="day"], div[class*="filter"] {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        gap: 8px !important;
+        width: 100% !important;
+        padding: 10px 5px !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Запрещаем кнопкам дней сжиматься или переноситься */
+    div:has(> button:contains("Понедельник")) button,
+    .days-navigation button, .days-filter button, .schedule-days button,
+    div[class*="day"] button, div[class*="filter"] button {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+        margin: 0 !important;
+    }
+
+    /* 2. Тренеры: переводим из вертикального списка в горизонтальную карусель */
+    .trainers-grid, .trainers-list, .trainers-container,
+    div:has(> div > h3:contains("Владимир")),
+    div:has(> div:contains("Опыт:")) {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory !important;
+        gap: 15px !important;
+        width: 100% !important;
+        padding: 10px 15px 20px 15px !important;
+        box-sizing: border-box !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Карточка тренера: показывает 1 полноценную карточку + край следующей */
+    .trainer-card, 
+    div:has(> h3:contains("Владимир")),
+    div:has(> p:contains("Опыт:")) {
+        flex: 0 0 85% !important;
+        min-width: 85% !important;
+        max-width: 85% !important;
+        scroll-snap-align: center !important;
+        box-sizing: border-box !important;
+    }
+}
+    /* Стили для всплывающего окна QR-кода */
+.qr-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+}
+
+.qr-modal-content {
+    background: #1a1a1a;
+    border: 1px solid #ccff00;
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    max-width: 360px;
+    width: 90%;
+    position: relative;
+    color: #fff;
+}
+
+.qr-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.qr-close:hover {
+    color: #ccff00;
+}
+
+.qr-image {
+    width: 200px;
+    height: 200px;
+    margin: 15px 0;
+    border-radius: 12px;
+    background: #fff;
+    padding: 10px;
+    object-fit: contain;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Делает квадратное фото круглым */
+    object-fit: cover;
+}
+    </style>
+</head>
+<body>
+
+    <!-- Шапка -->
+    <header>
+        <div class="logo">
+        <img src="static/logo.jpg" alt="Logo" class="logo-img">
+        FIT<span>ZONE</span>
+</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Главная</a></li>
+                <li><a href="#about">О нас</a></li>
+                <li><a href="#services">Услуги</a></li>
+                <li><a href="#trainers">Тренеры</a></li>
+                <li><a href="#schedule">Расписание</a></li>
+                <li><a href="#tariffs">Абонементы</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+    {% if user %}
+        <div class="user-profile-wrapper" id="userProfileBtn">
+            <div class="profile-icon">👤</div>
+            <span style="color: #fff; font-size: 14px; font-weight: 500;">{{ user.fullname }}</span>
+
+            <!-- Выпадающее меню профиля -->
+            <div class="profile-dropdown">
+        <ul>
+            {% if user.role == 'admin' %}
+                <li><a href="/admin" style="color: #ccff00; font-weight: 600;">⚙️ Панель администратора</a></li>
+                <li><a href="/logout" style="color: #ff4444;">🚪 Выйти</a></li>
+            {% else %}
+                <li><a href="#schedule">📋 Расписание</a></li>
+                <li><a href="#my-trainings">🧘 Мои тренировки</a></li>
+                <li><a href="#personal">🏋️ Персональный тренинг</a></li>
+                <li><a href="#achievements">🏆 Мои достижения</a></li>
+                <li><a href="#news">📰 Новости</a></li>
+                <li><a href="#notifications">🔔 Уведомления</a></li>
+                <li><a href="#feedback">✉️ Обратная связь</a></li>
+                <li class="dropdown-divider"></li>
+                <li><a href="/logout" style="color: #ff4444;">🚪 Выйти</a></li>
+            {% endif %}
+        </ul>
+    </div>
+        </div>
+    {% else %}
+        <button id="open-login-btn" class="btn-outline">Войти</button>
+    {% endif %}
+    <button class="btn-main open-modal-btn">Записаться</button>
+    </div>
+    </header>
+
+    <!-- Главная секция -->
+    <section class="hero" id="home">
+        <div class="hero-tag">СИЛА. ДВИЖЕНИЕ. РЕЗУЛЬТАТ.</div>
+        <h1>СТАНЬ ЛУЧШЕЙ <span>ВЕРСИЕЙ СЕБЯ</span></h1>
+        <p>Современный фитнес-клуб с тренажёрным залом, групповыми тренировками и опытной командой тренеров</p>
+        <div class="hero-btns">
+            <button class="btn-main open-modal-btn">Попробовать бесплатно</button>
+            <a href="#about" class="btn-outline">Узнать больше</a>
+        </div>
+
+        <!-- Виджет загруженности центра (Скриншот 3) -->
+        <div class="occupancy-bar">
+            <div class="occupancy-info">
+                <div class="occupancy-number">4</div>
+                <div class="occupancy-text">
+                    <h4>Текущая загруженность центра</h4>
+                    <p>Низкая загруженность. Отличное время для тренировки!</p>
+                </div>
+            </div>
+            <div class="occupancy-wave">
+                <div class="wave-bar" style="height: 12px;"></div>
+                <div class="wave-bar" style="height: 22px;"></div>
+                <div class="wave-bar" style="height: 16px;"></div>
+                <div class="wave-bar" style="height: 28px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- О нас -->
+    <section id="about">
+        <h2 class="section-title">Почему <span>FITZONE</span></h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Премиум оборудование</h3>
+                <p>Современные тренажёры от ведущих мировой брендов для любых фитнес-целей.</p>
+            </div>
+            <div class="card">
+                <h3>Опытные тренеры</h3>
+                <p>Профессионалы с профильным высшим образованием и международными сертификатами.</p>
+            </div>
+            <div class="card">
+                <h3>Удобное расписание</h3>
+                <p>Занятия с утра до позднего вечера без выходных и праздников.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Услуги -->
+    <section id="services">
+        <h2 class="section-title">Наши <span>Услуги</span></h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Тренажёрный зал</h3>
+                <p>Кардиозона, свободные веса, силовые тренажёры и зона функционального тренинга.</p>
+            </div>
+            <div class="card">
+                <h3>Групповые программы</h3>
+                <p>Йога, пилатес, кроссфит, Хэй Хилс, ZUMBA и интенсивные силовые классы.</p>
+            </div>
+            <div class="card">
+                <h3>Персональный тренинг</h3>
+                <p>Индивидуальная программа тренировок, коррекция техники и план питания.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Тренеры (15 специалистов) -->
+    <section id="trainers">
+        <h2 class="section-title">Наша <span>Команда</span></h2>
+        <div class="grid">
+            <div class="trainer-card">
+                <div class="trainer-avatar">👨‍🏋️</div>
+                <h4>Алексей Смирнов</h4>
+                <div class="role">Главный тренер / Силовой тренинг</div>
+                <div class="exp">Опыт: 10 лет</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">👩‍🧘</div>
+                <h4>Екатерина Иванова</h4>
+                <div class="role">Инструктор Йоги / Стретчинг</div>
+                <div class="exp">Опыт: 7 лет</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">🥊</div>
+                <h4>Михаил Петров</h4>
+                <div class="role">Бокс / Единоборства</div>
+                <div class="exp">Опыт: 8 лет</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">💃</div>
+                <h4>Анастасия Семёнова</h4>
+                <div class="role">Хай Хилс / Танцевальные классы</div>
+                <div class="exp">Опыт: 5 лет</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">🏃‍♂️</div>
+                <h4>Дмитрий Кузнецов</h4>
+                <div class="role">Кроссфит / Functional</div>
+                <div class="exp">Опыт: 9 лет</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">🤸‍♀️</div>
+                <h4>Елизавета Иванова</h4>
+                <div class="role">Пилатес / Здоровая спина</div>
+                <div class="exp">Опыт: 6 лет</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">🏋️‍♂️</div>
+                <h4>Сергей Попов</h4>
+                <div class="role">Пауэрлифтинг / Набор массы</div>
+                <div class="exp">Опыт: 11 лет</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">🏃‍♀️</div>
+                <h4>Мария Соколова</h4>
+                <div class="role">Кардио / Похудение</div>
+                <div class="exp">Опыт: 4 года</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">👨‍⚕️</div>
+                <h4>Артём Лебедев</h4>
+                <div class="role">Реабилитация / ЛФК</div>
+                <div class="exp">Опыт: 12 лет</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">🧘‍♀️</div>
+                <h4>Елена Козлова</h4>
+                <div class="role">Аэройога / Растяжка</div>
+                <div class="exp">Опыт: 5 лет</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">🚴‍♂️</div>
+                <h4>Игорь Новиков</h4>
+                <div class="role">Сайклинг / Кардио-интенсив</div>
+                <div class="exp">Опыт: 6 лет</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">🏊‍♂️</div>
+                <h4>Максим Волков</h4>
+                <div class="role">Аквааэробика / Плавание</div>
+                <div class="exp">Опыт: 8 лет</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">🧘</div>
+                <h4>Наталья Зайцева</h4>
+                <div class="role">МФР / Восстановление</div>
+                <div class="exp">Опыт: 5 лет</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">🥊</div>
+                <h4>Владимир Захаров</h4>
+                <div class="role">Кикбоксинг / Тайский бокс</div>
+                <div class="exp">Опыт: 10 лет</div>
+            </div>
+            <div class="trainer-card">
+                <div class="trainer-avatar">🏃‍♀️</div>
+                <h4>Юлия Мельникова</h4>
+                <div class="role">ZUMBA / Фитнес-микс</div>
+                <div class="exp">Опыт: 4 года</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция расписания -->
+    <section class="schedule-section">
+    <h2>Расписание занятий</h2>
+    
+    <!-- Кнопки переключения дней недели -->
+    <div class="days-nav">
+        <button class="day-btn active" onclick="selectDay(0, this)">Понедельник</button>
+        <button class="day-btn" onclick="selectDay(1, this)">Вторник</button>
+        <button class="day-btn" onclick="selectDay(2, this)">Среда</button>
+        <button class="day-btn" onclick="selectDay(3, this)">Четверг</button>
+        <button class="day-btn" onclick="selectDay(4, this)">Пятница</button>
+        <button class="day-btn" onclick="selectDay(5, this)">Суббота</button>
+        <button class="day-btn" onclick="selectDay(6, this)">Воскресенье</button>
+    </div>
+
+    <!-- Таблица расписания -->
+    <table class="schedule-table">
+        <thead>
+            <tr>
+                <th>Время</th>
+                <th>Тренировка</th>
+                <th>Тренер</th>
+                <th>Зал</th>
+                <th>Свободно мест</th>
+            </tr>
+        </thead>
+        <tbody id="home-schedule-tbody">
+            <!-- Сюда JS подгрузит данные из PostgreSQL -->
+        </tbody>
+    </table>
+    </section>
+    <!-- Абонементы -->
+    <section id="tariffs">
+        <h2 class="section-title">Выберите <span>Абонемент</span></h2>
+        <div class="grid">
+            <div class="tariff-card">
+                <h3>Старт</h3>
+                <div class="tariff-price">1 990 ₽ <span>/ мес</span></div>
+                <p>Доступ в тренажёрный зал с 07:00 до 16:00</p>
+                <button class="btn-main open-modal-btn" style="margin-top: 20px;">Выбрать</button>
+            </div>
+            <div class="tariff-card popular">
+                <h3>Оптимальный</h3>
+                <div class="tariff-price">2 990 ₽ <span>/ мес</span></div>
+                <p>Безлимитный доступ + 2 групповые тренировки</p>
+                <button class="btn-main open-modal-btn" style="margin-top: 20px;">Выбрать</button>
+            </div>
+            <div class="tariff-card">
+                <h3>Премиум</h3>
+                <div class="tariff-price">4 990 ₽ <span>/ мес</span></div>
+                <p>Полный безлимит + персональный тренер на месяц</p>
+                <button class="btn-main open-modal-btn" style="margin-top: 20px;">Выбрать</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Полный Футер -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="margin-bottom: 15px;">
+                    <img src="static/logo.jpg" alt="Logo" class="logo-img">
+                    FIT<span>ZONE</span>
+                </div>
+                <p style="font-size: 14px; color: #888;">Ваш идеальный фитнес-партнер. Достигайте результатов быстро, безопасно и с удовольствием.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Навигация</h4>
+                <ul>
+                    <li><a href="#about">О нас</a></li>
+                    <li><a href="#services">Услуги</a></li>
+                    <li><a href="#trainers">Тренеры</a></li>
+                    <li><a href="#schedule">Расписание</a></li>
+                    <li><a href="#tariffs">Абонементы</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Контакты</h4>
+                <ul>
+                    <li>📍 ул. Спортивная, 15, Новокузнецк</li>
+                    <li>📞 +7 (999) 123-45-67</li>
+                    <li>✉️ info@fitzone.ru</li>
+                    <li>⏰ Ежедневно с 07:00 до 23:00</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Мы в соцсетях</h4>
+                <ul>
+                    <!-- Кнопка Telegram -->
+                    <button class="btn-main" onclick="openQrModal('tgModal')">Telegram</button>
+                    <!-- Кнопка MAX -->
+                    <button class="btn-main" onclick="openQrModal('maxModal')">MAX</button>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 FITZONE Fitness Club. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <!-- Модальное окно Записи -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <h3 style="margin-bottom: 20px; text-align: center; color: #ccff00;">Запись на тренировку</h3>
+            <form id="booking-form">
+                <div class="form-group">
+                    <label>Ваше ФИО:</label>
+                    <input type="text" id="fullname" placeholder="Иван Иванов" required>
+                </div>
+                <div class="form-group">
+                    <label>Телефон (логин):</label>
+                    <input type="tel" id="phone" placeholder="+7 (999) 000-00-00" required>
+                </div>
+                <div class="form-group">
+                    <label>Придумайте пароль:</label>
+                    <input type="password" id="register-password" placeholder="Пароль для входа" required>
+                </div>
+                <div class="form-group">
+                    <label>Тариф:</label>
+                    <select id="tariff">
+                        <option value="Старт">Старт (1 990 ₽)</option>
+                        <option value="Оптимальный">Оптимальный (2 990 ₽)</option>
+                        <option value="Премиум">Премиум (4 990 ₽)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Тренер / Пожелания:</label>
+                    <input type="text" id="trainer_note" placeholder="Имя тренера или направление">
+                </div>
+                <button type="submit" class="btn-main" style="width: 100%; margin-top: 10px;">Записаться</button>
+            </form>
+            <p class="status-msg" id="status-msg"></p>
+        </div>
+    </div>
+
+    <!-- Модальное окно Входа -->
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-login-modal">&times;</span>
+            <h3 style="margin-bottom: 20px; text-align: center; color: #ccff00;">Вход в аккаунт</h3>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Логин / Телефон:</label>
+                    <input type="text" id="login-input" placeholder="Телефон или 'admin'" required>
+                </div>
+                <div class="form-group">
+                    <label>Пароль:</label>
+                    <input type="password" id="password-input" placeholder="Пароль" required>
+                </div>
+                <button type="submit" class="btn-main" style="width: 100%; margin-top: 10px;">Войти</button>
+            </form>
+            <p class="status-msg" id="login-status-msg"></p>
+        </div>
+    </div>
+
+    <!-- Скрипты -->
+    <script>
+        const modal = document.getElementById('modal');
+        const openBtns = document.querySelectorAll('.open-modal-btn');
+        const closeBtn = document.getElementById('close-modal');
+        const form = document.getElementById('booking-form');
+        const statusMsg = document.getElementById('status-msg');
+
+        openBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modal.style.display = 'flex';
+            });
+        });
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+        }
+
+        const loginModal = document.getElementById('login-modal');
+        const openLoginBtn = document.getElementById('open-login-btn');
+        const closeLoginBtn = document.getElementById('close-login-modal');
+        const loginForm = document.getElementById('login-form');
+        const loginStatusMsg = document.getElementById('login-status-msg');
+
+        if (openLoginBtn) {
+            openLoginBtn.addEventListener('click', () => {
+                loginModal.style.display = 'flex';
+            });
+        }
+        if (closeLoginBtn) {
+            closeLoginBtn.addEventListener('click', () => {
+                loginModal.style.display = 'none';
+            });
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+            if (e.target === loginModal) loginModal.style.display = 'none';
+        });
+
+        if (form) {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const payload = {
+                    fullname: document.getElementById('fullname').value,
+                    phone: document.getElementById('phone').value,
+                    password: document.getElementById('register-password').value,
+                    tariff: document.getElementById('tariff').value,
+                    trainer_note: document.getElementById('trainer_note').value
+                };
+
+                try {
+                    const res = await fetch('/api/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (res.ok) {
+                        statusMsg.style.color = '#ccff00';
+                        statusMsg.textContent = 'Успешно! Вы записаны.';
+                        form.reset();
+                        setTimeout(() => {
+                            modal.style.display = 'none';
+                            statusMsg.textContent = '';
+                        }, 1500);
+                    } else {
+                        statusMsg.style.color = '#ff4444';
+                        statusMsg.textContent = 'Ошибка сохранения в базу';
+                    }
+                } catch (err) {
+                    statusMsg.style.color = '#ff4444';
+                    statusMsg.textContent = 'Ошибка сети';
+                }
+            });
+        }
+
+        if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const payload = {
+                    login: document.getElementById('login-input').value,
+                    password: document.getElementById('password-input').value
+                };
+
+                try {
+                    const res = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await res.json();
+
+                    if (res.ok) {
+                        loginStatusMsg.style.color = '#ccff00';
+                        loginStatusMsg.textContent = 'Успешно!';
+                        setTimeout(() => {
+                            if (result.role === 'admin') {
+                                window.location.href = '/admin';
+                            } else {
+                                window.location.reload();
+                            }
+                        }, 800);
+                    } else {
+                        loginStatusMsg.style.color = '#ff4444';
+                        loginStatusMsg.textContent = result.message || 'Ошибка входа';
+                    }
+                } catch (err) {
+                    loginStatusMsg.style.color = '#ff4444';
+                    loginStatusMsg.textContent = 'Ошибка сети';
+                }
+            });
+        }
+    document.addEventListener('DOMContentLoaded', () => {
+    const profileBtn = document.getElementById('userProfileBtn');
+
+    if (profileBtn) {
+        // Открытие / Закрытие по клику на человечка или имя
+        profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileBtn.classList.toggle('active');
+        });
+
+        // Клик внутри самого выпадающего меню не закрывает его
+        const dropdown = profileBtn.querySelector('.profile-dropdown');
+        if (dropdown) {
+            dropdown.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+    }
+
+    // Клик в любую другую часть экрана закрывает меню
+    document.addEventListener('click', () => {
+        if (profileBtn) {
+            profileBtn.classList.remove('active');
+        }
+    });
+});
+    </script>
+
+  <script>
+let publicSchedule = [];
+let activeDayIndex = 0; // 0 = ПН, 1 = ВТ ... 6 = ВС
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetchSchedule();
+});
+
+// Загрузка данных из БД
+async function fetchSchedule() {
+    try {
+        const res = await fetch('/api/schedule');
+        publicSchedule = await res.json();
+        renderScheduleTable();
+    } catch (err) {
+        console.error('Ошибка загрузки расписания:', err);
+    }
+}
+
+// Переключение дня
+function selectDay(dayIdx, btn) {
+    activeDayIndex = dayIdx;
+    
+    // Переключение активности кнопок
+    document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    renderScheduleTable();
+}
+
+// Отрисовка таблицы на главной
+function renderScheduleTable() {
+    const tbody = document.getElementById('home-schedule-tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+
+    const filtered = publicSchedule.filter(item => {
+        const date = new Date(item.event_time);
+        const day = (date.getDay() + 6) % 7; // 0 = ПН
+        return day === activeDayIndex;
+    });
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px; color:#888;">На этот день занятий не запланировано</td></tr>`;
+        return;
+    }
+
+    filtered.forEach(item => {
+        const dateObj = new Date(item.event_time);
+        const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        // Проверка наличия мест
+        const seats = item.free_seats;
+        const seatsClass = seats > 0 ? 'seat-badge' : 'seat-badge full';
+        const seatsText = seats > 0 ? `${seats} мест` : 'Мест нет';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><strong style="color: #ffcc00;">${timeStr}</strong></td>
+            <td><strong>${item.title}</strong></td>
+            <td>${item.trainer}</td>
+            <td>${item.room}</td>
+            <td><span class="${seatsClass}">${seatsText}</span></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+</script>
+<!-- Модальное окно для Telegram -->
+<div id="tgModal" class="qr-modal">
+    <div class="qr-modal-content">
+        <span class="qr-close" onclick="closeQrModal('tgModal')">&times;</span>
+        <h3>Наш Telegram-канал</h3>
+        <img src="static/qr_tg.jpg" alt="QR-код Telegram" class="qr-image">
+        <p>Наведите камеру или перейдите по ссылке:</p>
+        <a href="https://t.me/+r5gW09bnrt1mZWE6" target="_blank" class="btn-main">Открыть Telegram</a>
+    </div>
+</div>
+
+<!-- Модальное окно для MAX -->
+<div id="maxModal" class="qr-modal">
+    <div class="qr-modal-content">
+        <span class="qr-close" onclick="closeQrModal('maxModal')">&times;</span>
+        <h3>Наш профиль в MAX</h3>
+        <img src="static/qr_max.jpg" alt="QR-код MAX" class="qr-image">
+        <p>Наведите камеру или перейдите по ссылке:</p>
+        <a href="https://max.ru/c/-78547865704488/AaB1cVCFNvA" target="_blank" class="btn-main">Открыть MAX</a>
+    </div>
+</div>
+<script>
+function openQrModal(modalId) {
+    document.getElementById(modalId).style.display = "flex";
+}
+
+function closeQrModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+}
+
+// Закрытие при клике вне окна
+window.onclick = function(event) {
+    if (event.target.classList.contains('qr-modal')) {
+        event.target.style.display = "none";
+    }
+};
+</script>  
+</body>
+</html>

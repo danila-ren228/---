@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора — FITZONE</title>
+    <style>
+        /* Сброс и базовые стили */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #111317;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 30px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Заголовок страницы */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #282d35;
+        }
+
+        .admin-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .admin-title span {
+            color: #ccff00;
+        }
+
+        /* Навигация по дням недели */
+        .days-nav {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .day-btn {
+            background: #1c1f26;
+            color: #b0b8c4;
+            border: 2px solid #2d333b;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .day-btn:hover {
+            background: #252a32;
+            border-color: #ccff00;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(57, 255, 20, 0.15);
+        }
+
+        .day-btn.active {
+            background: #ccff00;
+            color: #0d1117;
+            border-color: #ccff00;
+            font-weight: 800;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Карточки-блоки */
+        .card {
+            background-color: #1a1d24;
+            border: 1px solid #2a2f37;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title span#selected-day-title {
+            color: #ccff00;
+        }
+
+        /* Таблица расписания */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: #14171c;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #2a2f37;
+        }
+
+        th {
+            background-color: #222730;
+            color: #ccff00;
+            text-align: left;
+            padding: 14px 18px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border-bottom: 1px solid #2a2f37;
+        }
+
+        td {
+            padding: 14px 18px;
+            border-bottom: 1px solid #22262d;
+            color: #e0e0e0;
+            font-size: 0.95rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #1c2027;
+        }
+
+        /* Сетка формы */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            color: #8b949e;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .form-grid input {
+            background-color: #14171c;
+            border: 1px solid #2a2f37;
+            color: #ffffff;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-grid input:focus {
+            border-color: #ccff00;
+            box-shadow: 0 0 8px rgba(57, 255, 20, 0.2);
+        }
+
+        /* Кнопки действий */
+        .btn-del {
+            background-color: rgba(255, 77, 77, 0.1);
+            color: #ff4d4d;
+            border: 1px solid rgba(255, 77, 77, 0.4);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .btn-del:hover {
+            background-color: #ff4d4d;
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
+        }
+
+        .btn-submit {
+            background-color: #ccff00;
+            color: #0d1117;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+
+        .btn-submit:hover {
+            background-color: #ccff00;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* Индикатор мест */
+        .seats-badge {
+            color: #ccff00;
+            font-weight: 700;
+            background: rgba(57, 255, 20, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(57, 255, 20, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-header">
+        <div class="admin-title">FITZONE <span>/ Панель управления</span></div>
+    </div>
+
+    <!-- Переключатель дней -->
+    <div class="days-nav">
+        <button class="day-btn active" onclick="filterDay(0, this)">Понедельник</button>
+        <button class="day-btn" onclick="filterDay(1, this)">Вторник</button>
+        <button class="day-btn" onclick="filterDay(2, this)">Среда</button>
+        <button class="day-btn" onclick="filterDay(3, this)">Четверг</button>
+        <button class="day-btn" onclick="filterDay(4, this)">Пятница</button>
+        <button class="day-btn" onclick="filterDay(5, this)">Суббота</button>
+        <button class="day-btn" onclick="filterDay(6, this)">Воскресенье</button>
+    </div>
+
+    <!-- Таблица тренировок -->
+    <div class="card">
+        <div class="card-title">
+            <span>Список занятий (<span id="selected-day-title">Понедельник</span>)</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Время</th>
+                    <th>Тренировка</th>
+                    <th>Тренер</th>
+                    <th>Зал</th>
+                    <th>Места</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody id="schedule-table-body">
+                <!-- Строки загружаются через JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Форма добавления -->
+    <div class="card">
+        <div class="card-title">➕ Добавить тренировку</div>
+        <form id="addScheduleForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="schedTitle">Тренировка</label>
+                    <input type="text" id="schedTitle" placeholder="CrossFit" required>
+                </div>
+                <div class="form-group">
+                <label for="schedTrainer">Тренер</label>
+                    <input type="text" id="schedTrainer" placeholder="Алексей Смирнов" required>
+                </div>
+                <div class="form-group">
+                    <label for="schedRoom">Зал</label>
+                    <input type="text" id="schedRoom" placeholder="Зал 1" required>
+                </div>
+                <div class="form-group">
+                    <label for="schedTime">Дата и время</label>
+                    <input type="datetime-local" id="schedTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="schedSeats">Кол-во мест</label>
+                    <input type="number" id="schedSeats" placeholder="15" value="15" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-submit">Добавить в расписание</button>
+        </form>
+    </div>
+
+    <script>
+    let allSchedule = [];
+    let selectedDayIndex = 0; // 0 = Понедельник ... 6 = Воскресенье
+
+    const daysMap = [
+        'Понедельник', 'Вторник', 'Среда', 
+        'Четверг', 'Пятница', 'Суббота', 'Воскресенье'
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadScheduleFromDB();
+    });
+
+    // Загрузка данных из БД
+    async function loadScheduleFromDB() {
+        try {
+            const res = await fetch('/api/schedule');
+            allSchedule = await res.json();
+            renderAdminTable();
+        } catch (err) {
+            console.error('Ошибка загрузки базы:', err);
+        }
+    }
+
+    // Фильтрация по дням
+    function filterDay(dayIdx, btn) {
+        selectedDayIndex = dayIdx;
+        
+        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+
+        const titleEl = document.getElementById('selected-day-title');
+        if (titleEl) titleEl.innerText = daysMap[dayIdx];
+
+        renderAdminTable();
+    }
+
+    // Отрисовка элементов в таблице
+    function renderAdminTable() {
+        const tbody = document.getElementById('schedule-table-body');
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+
+        const filtered = allSchedule.filter(item => {
+            const date = new Date(item.event_time);
+            const day = (date.getDay() + 6) % 7; // Сдвиг JS (0=ВС) к 0=ПН
+            return day === selectedDayIndex;
+        });
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#8b949e; padding: 25px;">На этот день тренировок нет</td></tr>`;
+            return;
+        }
+
+        filtered.forEach(item => {
+            const dateObj = new Date(item.event_time);
+            const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateStr = dateObj.toLocaleDateString();
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${dateStr} ${timeStr}</td>
+                <td><strong style="color: #fff;">${item.title}</strong></td>
+                <td>${item.trainer}</td>
+                <td>${item.room}</td>
+                <td><span class="seats-badge">${item.free_seats} чел.</span></td>
+                <td><button class="btn-del" onclick="deleteItem(${item.id})">Удалить</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Добавление занятия
+    document.getElementById('addScheduleForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const bodyData = {
+            title: document.getElementById('schedTitle').value,
+            trainer: document.getElementById('schedTrainer').value,
+            room: document.getElementById('schedRoom').value,
+            event_time: document.getElementById('schedTime').value,
+            free_seats: parseInt(document.getElementById('schedSeats').value)
+        };
+        const res = await fetch('/api/admin/schedule', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodyData)
+        });
+
+        if (res.ok) {
+            document.getElementById('addScheduleForm').reset();
+            loadScheduleFromDB();
+        } else {
+            alert('Ошибка при добавлении тренировки');
+        }
+    });
+
+    // Удаление занятия
+    async function deleteItem(id) {
+        if (confirm('Удалить эту тренировку из базы данных?')) {
+            const res = await fetch(`/api/admin/schedule/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                loadScheduleFromDB();
+            } else {
+                alert('Ошибка при удалении');
+            }
+        }
+    }
+    </script>
+    <section style="margin: 40px 20px; color: #fff;">
+    <h2 style="color: #ccff00; margin-bottom: 20px;">Список клиентов и записей</h2>
+
+    <table style="width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.6); border: 1px solid #333;">
+        <thead>
+            <tr style="background: #111; border-bottom: 2px solid #ccff00; text-align: left;">
+                <th style="padding: 12px;">ID</th>
+                <th style="padding: 12px;">ФИО Клиента</th>
+                <th style="padding: 12px;">Телефон</th>
+                <th style="padding: 12px;">Тариф</th>
+                <th style="padding: 12px;">Заметка / Тренер</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+            <tr style="border-bottom: 1px solid #222;">
+                <td style="padding: 12px; color: #888;">#{{ client.id if client.id else client[0] }}</td>
+                <td style="padding: 12px; font-weight: bold;">{{ client.fullname if client.fullname else client[1] }}</td>
+                <td style="padding: 12px;">{{ client.phone if client.phone else client[2] }}</td>
+                <td style="padding: 12px; color: #ccff00;">{{ client.tariff if client.tariff else client[3] }}</td>
+                <td style="padding: 12px;">{{ client.trainer_note if client.trainer_note else client[5] }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="padding: 20px; text-align: center; color: #888;">
+                    Зарегистрированных клиентов пока нет
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+</body>
+</html>
